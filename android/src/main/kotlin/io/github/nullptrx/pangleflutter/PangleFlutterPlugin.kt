@@ -24,12 +24,15 @@ import io.github.nullptrx.pangleflutter.view.FeedViewFactory
 import io.github.nullptrx.pangleflutter.view.NativeBannerViewFactory
 import io.github.nullptrx.pangleflutter.view.SplashViewFactory
 
+import io.flutter.plugin.common.*
+
 /** PangleFlutterPlugin */
 open class PangleFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
   companion object {
     val kDefaultBannerAdCount = 3
     val kDefaultFeedAdCount = 3
     val kChannelName = "nullptrx.github.io/pangle"
+    val kEventChannelName = "nullptrx.github.io/pangle/adevent"
 
     @JvmStatic
     fun registerWith(registrar: PluginRegistry.Registrar) {
@@ -43,6 +46,9 @@ open class PangleFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware
 
         methodChannel = MethodChannel(messenger, kChannelName)
         methodChannel?.setMethodCallHandler(this)
+
+        eventChannel = EventChannel(messenger, kEventChannelName)
+        eventChannel?.setStreamHandler(PangleEventStream)
 
         bannerViewFactory = BannerViewFactory(messenger)
         registrar.platformViewRegistry().registerViewFactory(
@@ -77,6 +83,9 @@ open class PangleFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware
   private var feedViewFactory: FeedViewFactory? = null
   private val handler = Handler(Looper.getMainLooper())
 
+  // 添加EventChannel处理消息各种事件回调
+  private var eventChannel: EventChannel? = null
+
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
     activity = binding.activity
     feedViewFactory?.attachActivity(binding.activity)
@@ -104,6 +113,7 @@ open class PangleFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware
   override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
 
     context = binding.applicationContext
+    val context = binding.applicationContext
 
     methodChannel = MethodChannel(binding.binaryMessenger, kChannelName)
     methodChannel?.setMethodCallHandler(this)
@@ -126,11 +136,17 @@ open class PangleFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware
     binding.platformViewRegistry.registerViewFactory(
       "nullptrx.github.io/pangle_nativebannerview", nativeBannerViewFactory
     )
+    
+    eventChannel = EventChannel(binding.binaryMessenger, kEventChannelName)
+    eventChannel?.setStreamHandler(PangleEventStream)
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
     methodChannel?.setMethodCallHandler(null)
     methodChannel = null
+
+    eventChannel?.setStreamHandler(null)
+    eventChannel = null;
   }
 
   override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {

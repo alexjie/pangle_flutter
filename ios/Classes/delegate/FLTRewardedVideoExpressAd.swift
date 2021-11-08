@@ -31,6 +31,7 @@ internal final class FLTRewardedVideoExpressAd: NSObject, BUNativeExpressRewarde
         let preload = loadingType == .preload || loadingType == .preload_only
         if preload {
             rewardedVideoAd.extraDelegate = self
+            PangleEventStream.shared.emit(adType: "RewardVideoAd", adEvent: "onRewardVideoCached")
             /// 存入缓存
             PangleAdManager.shared.setRewardedVideoAd(slotId, rewardedVideoAd)
             /// 必须回调，否则task不能销毁，导致内存泄漏
@@ -45,6 +46,7 @@ internal final class FLTRewardedVideoExpressAd: NSObject, BUNativeExpressRewarde
 //        if self.isSkipped {
 //            return
 //        }
+        PangleEventStream.shared.emit(adType: "RewardVideoAd", adEvent: "onAdClose")
         if rewardedVideoAd.didReceiveSuccess != nil {
             rewardedVideoAd.didReceiveSuccess?(self.verify)
         } else {
@@ -59,8 +61,13 @@ internal final class FLTRewardedVideoExpressAd: NSObject, BUNativeExpressRewarde
             self.fail?(error)
         }
     }
+    
+    func nativeExpressRewardedVideoAdDidClick(_ rewardedVideoAd: BUNativeExpressRewardedVideoAd) {
+        PangleEventStream.shared.emit(adType: "RewardVideoAd", adEvent: "onAdVideoBarClick")
+    }
 
     func nativeExpressRewardedVideoAdDidClickSkip(_ rewardedVideoAd: BUNativeExpressRewardedVideoAd) {
+        PangleEventStream.shared.emit(adType: "RewardVideoAd", adEvent: "onSkippedVideo")
 //        self.isSkipped = true
 //        let error = NSError(domain: "skip", code: -1, userInfo: nil)
 //        if rewardedVideoAd.didReceiveFail != nil {
@@ -68,6 +75,14 @@ internal final class FLTRewardedVideoExpressAd: NSObject, BUNativeExpressRewarde
 //        } else {
 //            self.fail?(error)
 //        }
+    }
+    
+    func nativeExpressRewardedVideoAdViewRenderSuccess(_ rewardedVideoAd: BUNativeExpressRewardedVideoAd) {
+        PangleEventStream.shared.emit(adType: "RewardVideoAd", adEvent: "onAdShow")
+    }
+    
+    func nativeExpressRewardedVideoAdViewRenderFail(_ rewardedVideoAd: BUNativeExpressRewardedVideoAd) {
+        PangleEventStream.shared.emit(adType: "RewardVideoAd", adEvent: "onRenderFail")
     }
 
     func nativeExpressRewardedVideoAdServerRewardDidFail(_ rewardedVideoAd: BUNativeExpressRewardedVideoAd) {
@@ -85,6 +100,7 @@ internal final class FLTRewardedVideoExpressAd: NSObject, BUNativeExpressRewarde
     }
 
     func nativeExpressRewardedVideoAdDidPlayFinish(_ rewardedVideoAd: BUNativeExpressRewardedVideoAd, didFailWithError error: Error?) {
+        PangleEventStream.shared.emit(adType: "RewardVideoAd", adEvent: "onVideoComplete")
     }
 }
 

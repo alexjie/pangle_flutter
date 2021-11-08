@@ -78,6 +78,9 @@ class _RewardedVideoExpressPageState extends State<RewardedVideoExpressPage> {
         slotId: kRewardedVideoExpressId,
         loadingType: PangleLoadingType.preload_only,
       ),
+      eventHandler: (event) {
+        print('log：$event');
+      },
     );
     var data = jsonEncode(result);
     print(data);
@@ -96,6 +99,9 @@ class _RewardedVideoExpressPageState extends State<RewardedVideoExpressPage> {
         slotId: kRewardedVideoExpressId,
         loadingType: PangleLoadingType.normal,
       ),
+      eventHandler: (event) {
+        print('log：$event');
+      },
     );
     var data = jsonEncode(result);
     print(data);
@@ -114,6 +120,9 @@ class _RewardedVideoExpressPageState extends State<RewardedVideoExpressPage> {
         slotId: kRewardedVideoExpressId,
         loadingType: PangleLoadingType.preload,
       ),
+      eventHandler: (event) {
+        print('log：$event');
+      },
     );
     var data = jsonEncode(result);
     print(data);

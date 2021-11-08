@@ -29,6 +29,7 @@ import 'config_android.dart';
 import 'config_ios.dart';
 import 'constant.dart';
 import 'model.dart';
+import 'pangle_event.dart';
 
 final pangle = PanglePlugin._();
 
@@ -182,8 +183,12 @@ class PanglePlugin {
   Future<PangleResult> loadRewardedVideoAd({
     IOSRewardedVideoConfig? iOS,
     AndroidRewardedVideoConfig? android,
+    Function(String?)? eventHandler,
   }) async {
     Map<String, dynamic>? result;
+    if (eventHandler != null) {
+      PangleEvent().addEvent('RewardVideoAd', eventHandler);
+    }
     if (Platform.isIOS && iOS != null) {
       result = await _methodChannel.invokeMapMethod(
         'loadRewardedVideoAd',
@@ -240,8 +245,13 @@ class PanglePlugin {
   Future<PangleResult> loadInterstitialAd({
     IOSInterstitialConfig? iOS,
     AndroidInterstitialConfig? android,
+    Function(String?)? eventHandler,
   }) async {
     Map<String, dynamic>? result;
+    // 注册事件回调，多次注册用最后一次
+    if (eventHandler != null) {
+      PangleEvent().addEvent('NativeExpressAd', eventHandler);
+    }
     if (Platform.isIOS && iOS != null) {
       result = await _methodChannel.invokeMapMethod(
         'loadInterstitialAd',
@@ -264,8 +274,12 @@ class PanglePlugin {
   Future<PangleResult> loadFullscreenVideoAd({
     IOSFullscreenVideoConfig? iOS,
     AndroidFullscreenVideoConfig? android,
+    Function(String?)? eventHandler,
   }) async {
     Map<String, dynamic>? result;
+    if (eventHandler != null) {
+      PangleEvent().addEvent('FullScreenVideoAd', eventHandler);
+    }
     if (Platform.isIOS && iOS != null) {
       result = await _methodChannel.invokeMapMethod(
         'loadFullscreenVideoAd',

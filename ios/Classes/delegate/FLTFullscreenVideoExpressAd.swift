@@ -31,6 +31,7 @@ internal final class FLTFullscreenVideoExpressAd: NSObject, BUNativeExpressFulls
         if preload {
             self.loadingType = .normal
             fullscreenVideoAd.extraDelegate = self
+            PangleEventStream.shared.emit(adType: "FullScreenVideoAd", adEvent: "onFullScreenVideoCached")
             /// 存入缓存
             PangleAdManager.shared.setFullScreenVideoAd(slotId, fullscreenVideoAd)
             /// 必须回调，否则task不能销毁，导致内存泄漏
@@ -45,16 +46,22 @@ internal final class FLTFullscreenVideoExpressAd: NSObject, BUNativeExpressFulls
         if self.isSkipped {
             return
         }
+        PangleEventStream.shared.emit(adType: "FullScreenVideoAd", adEvent: "onAdClose")
         if fullscreenVideoAd.didReceiveSuccess != nil {
             fullscreenVideoAd.didReceiveSuccess?()
         } else {
             self.success?()
         }
     }
+    
+    func nativeExpressFullscreenVideoAdDidClick(_ fullscreenVideoAd: BUNativeExpressFullscreenVideoAd) {
+        PangleEventStream.shared.emit(adType: "FullScreenVideoAd", adEvent: "onAdVideoBarClick")
+    }
 
     func nativeExpressFullscreenVideoAdDidClickSkip(_ fullscreenVideoAd: BUNativeExpressFullscreenVideoAd) {
         self.isSkipped = true
         let error = NSError(domain: "skip", code: -1, userInfo: nil)
+        PangleEventStream.shared.emit(adType: "FullScreenVideoAd", adEvent: "onSkippedVideo")
         if fullscreenVideoAd.didReceiveFail != nil {
             fullscreenVideoAd.didReceiveFail?(error)
         } else {
@@ -63,12 +70,14 @@ internal final class FLTFullscreenVideoExpressAd: NSObject, BUNativeExpressFulls
     }
 
     func nativeExpressFullscreenVideoAdViewRenderSuccess(_ rewardedVideoAd: BUNativeExpressFullscreenVideoAd) {
+        PangleEventStream.shared.emit(adType: "FullScreenVideoAd", adEvent: "onAdShow")
     }
 
     func nativeExpressFullscreenVideoAdDidDownLoadVideo(_ fullscreenVideoAd: BUNativeExpressFullscreenVideoAd) {
     }
 
     func nativeExpressFullscreenVideoAdViewRenderFail(_ fullscreenVideoAd: BUNativeExpressFullscreenVideoAd, error: Error?) {
+        PangleEventStream.shared.emit(adType: "FullScreenVideoAd", adEvent: "onRenderFail")
         if fullscreenVideoAd.didReceiveFail != nil {
             fullscreenVideoAd.didReceiveFail?(error)
         } else {
@@ -77,6 +86,7 @@ internal final class FLTFullscreenVideoExpressAd: NSObject, BUNativeExpressFulls
     }
 
     func nativeExpressFullscreenVideoAd(_ fullscreenVideoAd: BUNativeExpressFullscreenVideoAd, didFailWithError error: Error?) {
+        PangleEventStream.shared.emit(adType: "FullScreenVideoAd", adEvent: "onError")
         if fullscreenVideoAd.didReceiveFail != nil {
             fullscreenVideoAd.didReceiveFail?(error)
         } else {
@@ -85,6 +95,7 @@ internal final class FLTFullscreenVideoExpressAd: NSObject, BUNativeExpressFulls
     }
 
     func nativeExpressFullscreenVideoAdDidPlayFinish(_ fullscreenVideoAd: BUNativeExpressFullscreenVideoAd, didFailWithError error: Error?) {
+        PangleEventStream.shared.emit(adType: "FullScreenVideoAd", adEvent: "onVideoComplete")
     }
 
 }

@@ -81,6 +81,9 @@ class _FullscreenVideoExpressPageState
         slotId: kFullscreenVideoExpressId,
         loadingType: PangleLoadingType.preload_only,
       ),
+      eventHandler: (event) {
+        print('log：$event');
+      },
     );
     var data = jsonEncode(result);
     print(data);
@@ -102,6 +105,9 @@ class _FullscreenVideoExpressPageState
         slotId: kFullscreenVideoExpressId,
         loadingType: PangleLoadingType.normal,
       ),
+      eventHandler: (event) {
+        print('log：$event');
+      },
     );
     var data = jsonEncode(result);
     print(data);
@@ -121,6 +127,9 @@ class _FullscreenVideoExpressPageState
       android: AndroidFullscreenVideoConfig(
         slotId: kFullscreenIdFull,
       ),
+      eventHandler: (event) {
+        print('log：$event');
+      },
     );
     var data = jsonEncode(result);
     print(data);

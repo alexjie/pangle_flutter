@@ -8,6 +8,7 @@ import io.github.nullptrx.pangleflutter.PangleAdManager
 import io.github.nullptrx.pangleflutter.common.PangleLoadingType
 import io.github.nullptrx.pangleflutter.common.kBlock
 
+import io.github.nullptrx.pangleflutter.PangleEventStream
 
 class FLTFullScreenVideoAd(var slotId: String, var target: Activity?, val loadingType: PangleLoadingType, var result: (Any) -> Unit = {}) : TTAdNative.FullScreenVideoAdListener {
   private var ttVideoAd: TTFullScreenVideoAd? = null
@@ -41,6 +42,7 @@ class FLTFullScreenVideoAd(var slotId: String, var target: Activity?, val loadin
    */
   @MainThread
   override fun onError(code: Int, message: String?) {
+    PangleEventStream.emit("FullScreenVideoAd", "onError")
   }
 
 
@@ -49,10 +51,11 @@ class FLTFullScreenVideoAd(var slotId: String, var target: Activity?, val loadin
    */
   override fun onFullScreenVideoCached() {
 
+    PangleEventStream.emit("FullScreenVideoAd", "onFullScreenVideoCached")
   }
 
   override fun onFullScreenVideoCached(ad: TTFullScreenVideoAd?) {
-
+ 
   }
 
   private fun invoke(code: Int = 0, message: String? = null) {
@@ -76,19 +79,24 @@ class FullScreenVideoAdInteractionImpl(var result: (Any) -> Unit?) : TTFullScree
 
   // 视频广告播完验证奖励有效性回调，参数分别为是否有效，奖励数量，奖励名称
   override fun onSkippedVideo() {
+    PangleEventStream.emit("FullScreenVideoAd", "onSkippedVideo")
     invoke(-1, "skip")
   }
 
   override fun onAdShow() {
+    PangleEventStream.emit("FullScreenVideoAd", "onAdShow")
   }
 
   override fun onAdVideoBarClick() {
+    PangleEventStream.emit("FullScreenVideoAd", "onAdVideoBarClick")
   }
 
   override fun onVideoComplete() {
+    PangleEventStream.emit("FullScreenVideoAd", "onVideoComplete")
   }
 
   override fun onAdClose() {
+    PangleEventStream.emit("FullScreenVideoAd", "onAdClose")
     invoke()
   }
 

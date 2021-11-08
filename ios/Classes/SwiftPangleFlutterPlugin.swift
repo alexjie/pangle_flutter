@@ -18,6 +18,10 @@ public class SwiftPangleFlutterPlugin: NSObject, FlutterPlugin {
         let channel = FlutterMethodChannel(name: "nullptrx.github.io/pangle", binaryMessenger: registrar.messenger())
         let instance = SwiftPangleFlutterPlugin(channel)
         registrar.addMethodCallDelegate(instance, channel: channel)
+        
+        let eventChannel = FlutterEventChannel(name: "nullptrx.github.io/pangle/adevent", binaryMessenger: registrar.messenger())
+        eventChannel.setStreamHandler(PangleEventStream.shared)
+        registrar.publish(eventChannel)
 
         let bannerViewFactory = BannerViewFactory(messenger: registrar.messenger())
         registrar.register(bannerViewFactory, withId: "nullptrx.github.io/pangle_bannerview")

@@ -7,6 +7,8 @@ import io.github.nullptrx.pangleflutter.PangleAdManager
 import io.github.nullptrx.pangleflutter.common.PangleLoadingType
 import io.github.nullptrx.pangleflutter.common.kBlock
 
+import io.github.nullptrx.pangleflutter.PangleEventStream
+
 internal class FLTRewardedVideoAd(val slotId: String, var target: Activity?, val loadingType: PangleLoadingType, var result: (Any) -> Unit = {}) : TTAdNative.RewardVideoAdListener {
 
   var ttVideoAd: TTRewardVideoAd? = null
@@ -27,12 +29,14 @@ internal class FLTRewardedVideoAd(val slotId: String, var target: Activity?, val
   }
 
   override fun onRewardVideoCached() {
+    PangleEventStream.emit("RewardVideoAd", "onRewardVideoCached")
   }
 
   override fun onRewardVideoCached(ad: TTRewardVideoAd?) {
   }
 
   override fun onError(code: Int, message: String?) {
+    PangleEventStream.emit("RewardVideoAd", "onError")
     invoke(code, message)
 
   }
@@ -61,27 +65,34 @@ internal class RewardAdInteractionImpl(var result: (Any) -> Unit?) : TTRewardVid
 
   // 视频广告播完验证奖励有效性回调，参数分别为是否有效，奖励数量，奖励名称
   override fun onRewardVerify(verify: Boolean, amount: Int, rewardName: String, errorCode: Int, errorMsg: String) {
+    PangleEventStream.emit("RewardVideoAd", "onRewardVerify")
     this.verify = verify
   }
 
   override fun onSkippedVideo() {
+    PangleEventStream.emit("RewardVideoAd", "onSkippedVideo")
 //    invoke(-1, "skip")
   }
 
   override fun onAdShow() {
+    PangleEventStream.emit("RewardVideoAd", "onAdShow")
   }
 
   override fun onAdVideoBarClick() {
+    PangleEventStream.emit("RewardVideoAd", "onAdVideoBarClick")
   }
 
   override fun onVideoComplete() {
+    PangleEventStream.emit("RewardVideoAd", "onVideoComplete")
   }
 
   override fun onAdClose() {
+    PangleEventStream.emit("RewardVideoAd", "onAdClose")
     invoke(verify = verify)
   }
 
   override fun onVideoError() {
+    PangleEventStream.emit("RewardVideoAd", "onVideoError")
     invoke(-1, "error")
   }
 
